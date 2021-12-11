@@ -1,9 +1,14 @@
-import { Button, Card, CardActions, CardContent, Stack, TextField, Typography } from '@mui/material'
+import { Button, Card, CardActions, CardContent, Grid, Stack, TextField, Typography } from '@mui/material'
 import { DateTime } from 'luxon'
 import React, { useState } from 'react'
+import { Event } from './Event'
 import { Timer } from './timer'
 
-function EventComponent() {
+interface Props {
+    event: Event
+}
+
+function EventComponent(props: Props) {
     function validateEventName(e: any) {
         const _eventName = e.target.value
         setEventName(_eventName)
@@ -93,23 +98,28 @@ function EventComponent() {
         eventButton = <Button onClick={startCountdown}>Start</Button>
     }
 
+    let countDownHtml;
+    if (countDown !== "")
+        countDownHtml = <Typography>{countDown}</Typography>
     return (
-        <Card sx={{ maxWidth: 400 }}>
-            <CardContent>
-                <Stack spacing={2}>
-                    <TextField value={eventName} onChange={validateEventName} placeholder="Enter Event Name" />
-                    <Stack direction="row" spacing={2} alignItems="center">
-                        <TextField value={eventDate} onChange={validateDate} type="date" />
-                        <TextField value={eventTime} onChange={validateTime} type="time" />
-                    </Stack>
-                    <Typography>{countDown}</Typography>
+        <Grid item>
+            <Card sx={{ maxWidth: 400 }}>
+                <CardContent>
+                    <Stack spacing={2}>
+                        <TextField value={eventName} onChange={validateEventName} placeholder="Enter Event Name" />
+                        <Stack direction="row" spacing={2} alignItems="center">
+                            <TextField value={eventDate} onChange={validateDate} type="date" />
+                            <TextField value={eventTime} onChange={validateTime} type="time" />
+                        </Stack>
+                        {countDownHtml}
 
-                </Stack>
-            </CardContent>
-            <CardActions>
-                {eventButton}
-            </CardActions>
-        </Card>
+                    </Stack>
+                </CardContent>
+                <CardActions>
+                    {eventButton}
+                </CardActions>
+            </Card>
+        </Grid>
     )
 }
 
