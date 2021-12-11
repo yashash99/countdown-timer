@@ -5,42 +5,50 @@ import { Event } from './Event'
 import { Timer } from './timer'
 
 interface Props {
-    event: Event
+    event: Event,
+    onEventChange: (event: Event) => void
 }
 
 function EventComponent(props: Props) {
     function validateEventName(e: any) {
         const _eventName = e.target.value
-        setEventName(_eventName)
+        props.event.eventName = _eventName
+        props.onEventChange(props.event)
     }
     function validateDate(e: any) {
         let _eventDate = e.target.value
-        setEventDate(_eventDate)
+        props.event.eventDate = _eventDate
+
 
         if (_eventDate === "") {
             _eventDate = DateTime.now().toISODate()
             stopCountdown()
         }
 
-        if (eventTime === "") {
-            setEventDateTime(DateTime.fromJSDate(new Date((_eventDate + " 00:00:00").trim())))
+        if (props.event.eventTime === "") {
+            props.event.eventDateTime = DateTime.fromJSDate(new Date((_eventDate + " 00:00:00").trim()))
         } else {
-            setEventDateTime(DateTime.fromJSDate(new Date((_eventDate + " " + eventDateTime.toISOTime({ suppressSeconds: true, suppressMilliseconds: true, format: 'extended', includeOffset: false })).trim())))
+            props.event.eventDateTime = DateTime.fromJSDate(new Date((_eventDate + " " + props.event.eventDateTime.toISOTime({ suppressSeconds: true, suppressMilliseconds: true, format: 'extended', includeOffset: false })).trim()))
         }
+        props.onEventChange(props.event)
 
     }
     function validateTime(e: any) {
         const _eventTime = e.target.value
+
+        props.event.eventTime = _eventTime
+
         if (_eventTime === "") {
             stopCountdown()
         }
-        setEventTime(_eventTime)
-        setEventDateTime(DateTime.fromJSDate(new Date((eventDateTime.toISODate() + " " + _eventTime).trim())))
+        props.event.eventDateTime = DateTime.fromJSDate(new Date((props.event.eventDateTime.toISODate() + " " + _eventTime).trim()))
+
+        props.onEventChange(props.event)
     }
     function startCountdown() {
 
         function callback() {
-            const dateDiff = eventDateTime.diffNow(['years', 'months', 'days', 'hours', 'minutes', 'seconds'], { conversionAccuracy: 'casual' })
+            const dateDiff = props.event.eventDateTime.diffNow(['years', 'months', 'days', 'hours', 'minutes', 'seconds'], { conversionAccuracy: 'casual' })
 
             let countdown = "";
             if (dateDiff.years > 0) {
@@ -66,7 +74,7 @@ function EventComponent(props: Props) {
         }
 
         timer.set(callback, 1000)
-        if (eventTime !== "" || eventDate !== "") {
+        if (props.event.eventTime !== "" || props.event.eventDate !== "") {
             setIsStarted(true)
             timer.start()
         }
@@ -78,14 +86,8 @@ function EventComponent(props: Props) {
         timer.stop()
         setCountDown("")
     }
-    const [eventName, setEventName] = useState("")
-    let date = DateTime.now()
-    date = date.set({ second: 0, millisecond: 0 })
-    const [eventDateTime, setEventDateTime] = useState(date)
-    const [countDown, setCountDown] = useState("")
 
-    const [eventDate, setEventDate] = useState("")
-    const [eventTime, setEventTime] = useState("")
+    const [countDown, setCountDown] = useState("")
 
     const [isStarted, setIsStarted] = useState(false)
     const [timer,] = useState(new Timer())
@@ -106,10 +108,10 @@ function EventComponent(props: Props) {
             <Card sx={{ maxWidth: 400 }}>
                 <CardContent>
                     <Stack spacing={2}>
-                        <TextField value={eventName} onChange={validateEventName} placeholder="Enter Event Name" />
+                        <TextField value={props.event.eventName} onChange={validateEventName} placeholder="Enter Event Name" />
                         <Stack direction="row" spacing={2} alignItems="center">
-                            <TextField value={eventDate} onChange={validateDate} type="date" />
-                            <TextField value={eventTime} onChange={validateTime} type="time" />
+                            <TextField value={props.event.eventDate} onChange={validateDate} type="date" />
+                            <TextField value={props.event.eventTime} onChange={validateTime} type="time" />
                         </Stack>
                         {countDownHtml}
 

@@ -8,13 +8,22 @@ import EventComponent from './EventComponent';
 function App() {
   function addEvent() {
     let newList = Array.from(eventList)
-    newList.push(new Event())
+    setEventCount(eventCount + 1)
+    newList.push(new Event(eventCount))
+    setEventList(newList)
+  }
+  function onEventChange(event: Event) {
+    eventList[event.id] = event
+    let newList = Array.from(eventList)
     setEventList(newList)
   }
   const [eventList, setEventList] = useState(new Array<Event>())
 
+  const [eventCount, setEventCount] = useState(0)
+
+
   let eventListHtml = eventList.map((e, i) =>
-    <EventComponent key={i} event={e} />
+    <EventComponent key={i} event={e} onEventChange={onEventChange} />
   )
 
   return (
