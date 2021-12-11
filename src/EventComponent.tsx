@@ -14,6 +14,7 @@ function EventComponent() {
 
         if (_eventDate === "") {
             _eventDate = DateTime.now().toISODate()
+            stopCountdown()
         }
 
         if (eventTime === "") {
@@ -25,6 +26,9 @@ function EventComponent() {
     }
     function validateTime(e: any) {
         const _eventTime = e.target.value
+        if (_eventTime === "") {
+            stopCountdown()
+        }
         setEventTime(_eventTime)
         setEventDateTime(DateTime.fromJSDate(new Date((eventDateTime.toISODate() + " " + _eventTime).trim())))
     }
@@ -88,6 +92,7 @@ function EventComponent() {
     } else {
         eventButton = <Button onClick={startCountdown}>Start</Button>
     }
+
     return (
         <Card sx={{ maxWidth: 400 }}>
             <CardContent>
