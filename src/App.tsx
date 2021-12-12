@@ -17,13 +17,19 @@ function App() {
     let newList = Array.from(eventList)
     setEventList(newList)
   }
+  function onDeleteEvent(event: Event) {
+
+    let newList = Array.from(eventList.filter((e) => e !== event))
+    setEventList(newList)
+
+  }
   const [eventList, setEventList] = useState(new Array<Event>())
 
   const [eventCount, setEventCount] = useState(0)
 
 
   let eventListHtml = eventList.map((e, i) =>
-    <EventComponent key={i} event={e} onEventChange={onEventChange} />
+    <EventComponent key={i} event={e} onEventChange={onEventChange} onDeleteEvent={onDeleteEvent} />
   )
 
   return (
@@ -31,7 +37,7 @@ function App() {
       <CssBaseline />
       <Container>
         <Stack spacing={2} alignItems="flex-start">
-          <Typography variant="h1">Events</Typography>
+          <Typography variant="h1">Countdown</Typography>
           <Button onClick={addEvent} variant="outlined">Add Event</Button>
           <Grid container spacing={2} >
             {eventListHtml}

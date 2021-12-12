@@ -7,6 +7,7 @@ export class Timer {
         this.time = time
     }
     start() {
+        this.callback!()
         this.timerId = setInterval(this.callback!, this.time!)
     }
     stop() {
