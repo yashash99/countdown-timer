@@ -14,13 +14,11 @@ function App() {
   function onEventChange(event: Event) {
     setEventList((data) => {
       data[data.indexOf(event)] = cloneDeep(event)
-      return data
     })
   }
   function onDeleteEvent(event: Event) {
     setEventList((data) => {
       data.splice(data.indexOf(event), 1)
-      return data
     })
   }
   const [eventList, setEventList] = useImmer(new Array<Event>())
